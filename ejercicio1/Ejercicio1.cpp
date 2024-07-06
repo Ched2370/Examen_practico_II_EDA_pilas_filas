@@ -1,8 +1,9 @@
+/*
 #include <iostream>
 #include <cstdlib>
-#include <ctime>
 
-/* Dadas dos matrices de 4x4, matriz1 y matriz2, y una tercera matriz resultado donde 
+
+Dadas dos matrices de 4x4, matriz1 y matriz2, y una tercera matriz resultado donde 
 almacenaremos la suma de las dos matrices. 
 a. Arme la funcion cargarMatrix, recibe una matriz y pide carga de números entre 1 a 10.
 b. Armar una a función sumarMatrix recibe las dos matrices de entrada y la matriz de 
@@ -11,108 +12,120 @@ c. Otro procedimiento imprimirMatrix, usado para imprimir cualquier matriz en la
 d. En la función main, debes crear las matrices de ejemplo matriz1 y matriz2, y luego acto 
 seguido, imprimimos las tres matrices en la consola con la función imprimirMatrix.
 e. Un último proceso recibe la matriz3 resultante, remplaza los elementos pares por su 
-valor al cuadrado, luego se reutiliza el procedimiento imprimirMatrix.*/
-const int espacio = 4;
+valor al cuadrado, luego se reutiliza el procedimiento imprimirMatrix.
+*/
 
-void cargarMatrix(int matrix[espacio][espacio]) {
-    
-    srand(time(0)); // Inicializar con numero aleatorio para las matrices que sean de menores a 10. 
-    for (int i = 0; i < espacio; ++i) {
-        for (int j = 0; j < espacio; ++j) {
-            matrix[i][j] = rand() % 10 + 1;
+#include <iostream>
+#include <queue>
+#include <stack>
+#include <ctime>
+const int elemento = 4;
+
+
+
+void cargarMatrix(int matrix[elemento][elemento]) {
+srand(time(0));
+    for (int i = 0; i < elemento; ++i) {
+        for (int j = 0; j < elemento; ++j) {
+            do {
+
+
+                std::cout << "Ingresa un valor entre 1 y 10 para la posición [" << i << "][" << j << "]: ";
+
+
+
+                matrix[i][j] = rand() % 10 + 1;
+
+            } while (matrix[i][j] < 1 || matrix[i][j] > 10);
         }
     }
-    /*
-    //matriz para leerlo paso a paso
-     for (int i = 0; i < espacio; ++i) {
-        for (int j = 0; j < espacio; ++j) {
-            if(matrix[i][j] < 10){ 
-            std::cout << "ingrese la posiciones: [" << i << "][" << j << "] " << std::endl;
-            std::cin >> matrix[i][j];
-            }else{
-                std::cout << "ingrese una matriz menor a 10: "<< std::endl;
-            }
-        }
-    }
-    */
-    /*
-    for (int i = 0; i < espacio; ++i) {
-        for (int j = 0; j < espacio; ++j) {
-            matrix[i][j] = rand() % 10 + 1;
-        }
-    }
-    */
 }
 
-// Función para sumar dos matrices
-void sumarMatrix(const int matrix1[espacio][espacio], const int matrix2[espacio][espacio], int resultado[espacio][espacio]) {
 
-
-    for (int i = 0; i < espacio; ++i) {
-
-        for (int j = 0; j < espacio; ++j) {
+void sumarMatrix(const int matrix1[elemento][elemento], const int matrix2[elemento][elemento], int resultado[elemento][elemento]) {
+    for (int i = 0; i < elemento; ++i) {
+        for (int j = 0; j < elemento; ++j) {
             resultado[i][j] = matrix1[i][j] + matrix2[i][j];
         }
     }
 }
-
-// Función para imprimir una matriz
-void imprimirMatrix(const int matrix[espacio][espacio]) {
-
-    for (int i = 0; i < espacio; ++i) {
-        for (int j = 0; j < espacio; ++j) {
+void reemplazarParesConCuadrado(int matrix[elemento][elemento]) {
 
 
-            std::cout << "[ " << matrix[i][j] << " ]";
+    std::queue<int> fila;
+
+    std::stack<int> pila;
+    
+
+    for (int i = 0; i < elemento; ++i) {
+        for (int j = 0; j < elemento; ++j) {
+            if (matrix[i][j] % 2 == 0) {
+                matrix[i][j] = matrix[i][j] * matrix[i][j];
+            }
+
+            fila.push(matrix[i][j]);
+        }
+    }
+
+    // Transferir elementos de la fila a la pila
+    while (!fila.empty()) {
+        pila.push(fila.front());
+        fila.pop();
+    }
+
+    // Transferir elementos de la pila de nuevo a la matriz
+    for (int i = elemento - 1; i >= 0; --i) {
+        for (int j = elemento - 1; j >= 0; --j) {
+
+
+            matrix[i][j] = pila.top();
+
+
+            pila.pop();
+        }
+    }
+}
+
+void imprimirMatrix(const int matrix[elemento][elemento]) {
+
+    for (int i = 0; i < elemento; ++i) {
+        for (int j = 0; j < elemento; ++j) {
+            std::cout  << " ["   << matrix[i][j] << "] ";
         }
         std::cout << std::endl;
     }
 }
 
-// Función para reemplazar los elementos pares por su valor al cuadrado
-void reemplazarParesConCuadrado(int matrix[espacio][espacio]) {
 
-    std::cout << "Funcion remplazar pares" << std::endl;
-    for (int i = 0; i < espacio; ++i) {
 
-        for (int j = 0; j < espacio; ++j) {
-            if (matrix[i][j] % 2 == 0) {
 
-                
-                matrix[i][j] = matrix[i][j] * matrix[i][j];
-
-            }
-        }
-    }
-}
 int main() {
-    int matriz1[espacio][espacio];
+    int matriz1[elemento][elemento];
+    int matriz2[elemento][elemento];
+    int matrizResultado[elemento][elemento];
 
-    int matriz2[espacio][espacio];
-
-    //imprime el valor del resultado de la suma
-    int matrizResultado[espacio][espacio];
-
+    std::cout << "Cargar valores para Matriz 1:" << std::endl;
     cargarMatrix(matriz1);
+    std::cout << "Cargar valores para Matriz 2:" << std::endl;
     cargarMatrix(matriz2);
+
     sumarMatrix(matriz1, matriz2, matrizResultado);
 
     std::cout << "Matriz 1:" << std::endl;
-
-
     imprimirMatrix(matriz1);
 
     std::cout << "Matriz 2:" << std::endl;
-
     imprimirMatrix(matriz2);
 
-    std::cout << "Matriz Suma:" << std::endl;
-    imprimirMatrix(matrizResultado);
+    std::cout << "Matriz Resultadola suma:" << std::endl;
 
+
+    imprimirMatrix(matrizResultado);
 
     reemplazarParesConCuadrado(matrizResultado);
 
-    std::cout << "Matriz Resultado de pares al cuadrado:" << std::endl;
+    std::cout << "Matriz Resultado Pares del cuadrado" << std::endl;
+
 
     imprimirMatrix(matrizResultado);
 
